@@ -1,0 +1,12 @@
+Source: odroid-boothelper
+Section: misc
+Priority: extra
+Maintainer: Dongjin Kim <tobetter@gmail.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Homepage: https://github.com/tobetter/odroid-boothelper
+
+Package: odroid-boothelper
+Architecture: any
+Depends: ${shlibs:Depens}, ${misc:Depends}, initramfs-tools, uboot-mkimage
+Description: Boot setup helper for Linux kernel
