@@ -24,10 +24,10 @@ if [ ! -f /boot/boot.ini ]; then
 ODROIDXU-UBOOT-CONFIG
 
 # U-Boot Parameters (DO NOT MODIFY)
-setenv kernelversion KERNELVERSION
-setenv zimage vmlinuz-\${kernelversion}
-setenv uinitrd uInitrd-\${kernelversion}
-setenv devicetree exynos5422-${device}-\${kernelversion}.dtb
+setenv version
+setenv zimage vmlinuz-\${version}
+setenv uinitrd uInitrd-\${version}
+setenv devicetree exynos5422-${device}-\${version}.dtb
 
 setenv initrd_high "0xffffffff"
 setenv fdt_high "0xffffffff"
@@ -43,4 +43,4 @@ boot
 __EOF
 fi
 
-sed -i "s/KERNELVERSION/${version}/g" /boot/boot.ini
+sed -i "s/^setenv version/setenv version ${version}/g" /boot/boot.ini
