@@ -1,8 +1,9 @@
-odroid-boothelper (1.0-1) UNRELEASED; urgency=medium
+odroid-boothelper (1.0-1ubuntu1) UNRELEASED; urgency=medium
 
   * Added essential script to initiate boot blobs
+  * Added to initiate /boot/boot.ini to load installed kernel
 
- -- Dongjin Kim <tobetter@hkxeon>  Wed, 22 Jul 2015 12:03:18 +0900
+ -- Dongjin Kim <tobetter@gmail.com>  Mon, 27 Jul 2015 19:49:04 +0900
 
 odroid-boothelper (1.0) unstable; urgency=low
 

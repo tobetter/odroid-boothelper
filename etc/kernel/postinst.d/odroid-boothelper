@@ -6,11 +6,39 @@ version="$1"
 #        or can be obtained from the board itself.
 device=odroidxu4
 
-UINITRD=/boot/uInitrd-${version}
+zimage=vmlinuz-${version}
+uinitrd=uInitrd-${version}
+devicetree=exynos5422-${device}-${version}.dtb
 
-cp -f /lib/modules/${version}/boot/vmlinuz-${version} /boot
-cp -f /lib/modules/${version}/boot/exynos5422-${device}-${version}.dtb /boot
+cp -f /lib/modules/${version}/boot/${zimage} /boot
+cp -f /lib/modules/${version}/boot/${devicetree} /boot
 
 mkimage -A arm -O linux -T ramdisk -C gzip \
         -a 0x42000000 -e 0x42000000 -n uInitrd \
-        -d /boot/initrd.img-${version} ${UINITRD}
+        -d /boot/initrd.img-${version} /boot/${uinitrd}
+
+if [ ! -f /boot/boot.ini ]; then
+        cat>/boot/boot.ini<<__EOF
+ODROIDXU-UBOOT-CONFIG
+
+# U-Boot Parameters (DO NOT MODIFY)
+setenv kernelversion KERNELVERSION
+setenv zimage vmlinuz-\${kernelversion}
+setenv uinitrd uInitrd-\${kernelversion}
+setenv devicetree exynos5422-${device}-\${kernelversion}.dtb
+
+setenv initrd_high "0xffffffff"
+setenv fdt_high "0xffffffff"
+
+# Default boot argument
+setenv bootrootfs "console=ttySAC2,115200n8 root=/dev/mmcblk0p2 rootwait ro"
+
+# boot commands
+setenv bootcmd "fatload mmc 0:1 0x40008000 \${zimage}; fatload mmc 0:1 0x42000000 \${uinitrd}; fatload mmc 0:1 0x44000000 \${devicetree}; bootz 0x40008000 0x42000000 0x44000000"
+setenv bootargs "\${bootrootfs}"
+
+boot
+__EOF
+fi
+
+sed -i "s/KERNELVERSION/${version}/g" /boot/boot.ini
