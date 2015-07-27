@@ -1,4 +1,10 @@
-odroid-boothelper (1.0-1ubuntu1) UNRELEASED; urgency=medium
+odroid-boothelper (1.0-1ubuntu2) UNRELEASED; urgency=medium
+
+  * Added initrd load address
+
+ -- Dongjin Kim <tobetter@gmail.com>  Mon, 27 Jul 2015 20:04:51 +0900
+
+odroid-boothelper (1.0-1ubuntu1) precise; urgency=medium
 
   * Added essential script to initiate boot blobs
   * Added to initiate /boot/boot.ini to load installed kernel

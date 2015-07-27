@@ -10,11 +10,13 @@ zimage=vmlinuz-${version}
 uinitrd=uInitrd-${version}
 devicetree=exynos5422-${device}-${version}.dtb
 
+initrd_addr=0x42000000
+
 cp -f /lib/modules/${version}/boot/${zimage} /boot
 cp -f /lib/modules/${version}/boot/${devicetree} /boot
 
 mkimage -A arm -O linux -T ramdisk -C gzip \
-        -a 0x42000000 -e 0x42000000 -n uInitrd \
+        -a ${initrd_addr} -e ${initrd_addr} -n uInitrd \
         -d /boot/initrd.img-${version} /boot/${uinitrd}
 
 if [ ! -f /boot/boot.ini ]; then
@@ -34,7 +36,7 @@ setenv fdt_high "0xffffffff"
 setenv bootrootfs "console=ttySAC2,115200n8 root=/dev/mmcblk0p2 rootwait ro"
 
 # boot commands
-setenv bootcmd "fatload mmc 0:1 0x40008000 \${zimage}; fatload mmc 0:1 0x42000000 \${uinitrd}; fatload mmc 0:1 0x44000000 \${devicetree}; bootz 0x40008000 0x42000000 0x44000000"
+setenv bootcmd "fatload mmc 0:1 0x40008000 \${zimage}; fatload mmc 0:1 ${initrd_addr} \${uinitrd}; fatload mmc 0:1 0x44000000 \${devicetree}; bootz 0x40008000 ${initrd_addr} 0x44000000"
 setenv bootargs "\${bootrootfs}"
 
 boot
