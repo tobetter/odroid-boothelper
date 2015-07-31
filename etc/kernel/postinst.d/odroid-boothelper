@@ -43,4 +43,4 @@ boot
 __EOF
 fi
 
-sed -i "s/^setenv version/setenv version ${version}/g" /boot/boot.ini
+sed -i "s/^setenv version.*$/setenv version ${version}/g" /boot/boot.ini
