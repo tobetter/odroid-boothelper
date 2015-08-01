@@ -8,12 +8,14 @@ device=odroidxu4
 
 zimage=vmlinuz-${version}
 uinitrd=uInitrd-${version}
-devicetree=exynos5422-${device}-${version}.dtb
+fdtbin=exynos5422-${device}-${version}.dtb
 
+zimage_addr=0x40008000
 initrd_addr=0x42000000
+fdtbin_addr=0x44000000
 
 cp -f /lib/modules/${version}/boot/${zimage} /boot
-cp -f /lib/modules/${version}/boot/${devicetree} /boot
+cp -f /lib/modules/${version}/boot/${fdtbin} /boot
 
 mkimage -A arm -O linux -T ramdisk -C gzip \
         -a ${initrd_addr} -e ${initrd_addr} -n uInitrd \
@@ -27,17 +29,26 @@ ODROIDXU-UBOOT-CONFIG
 setenv version
 setenv zimage vmlinuz-\${version}
 setenv uinitrd uInitrd-\${version}
-setenv devicetree exynos5422-${device}-\${version}.dtb
+setenv fdtbin exynos5422-${device}-\${version}.dtb
+
+setenv zimage_addr_r ${zimage_addr}
+setenv initrd_addr_r ${initrd_addr}
+setenv fdtbin_addr_r ${fdtbin_addr}
 
 setenv initrd_high "0xffffffff"
 setenv fdt_high "0xffffffff"
 
 # Default boot argument
-setenv bootrootfs "console=ttySAC2,115200n8 root=/dev/mmcblk0p2 rootwait ro"
+setenv bootrootfs "root=/dev/mmcblk0p2 rootwait ro"
+setenv console "console=ttySAC2,115200n8"
+
+setenv bootargs "\${bootrootfs} \${console}"
 
 # boot commands
-setenv bootcmd "fatload mmc 0:1 0x40008000 \${zimage}; fatload mmc 0:1 ${initrd_addr} \${uinitrd}; fatload mmc 0:1 0x44000000 \${devicetree}; bootz 0x40008000 ${initrd_addr} 0x44000000"
-setenv bootargs "\${bootrootfs}"
+fatload mmc 0:1 \${zimage_addr_r} \${zimage}
+fatload mmc 0:1 \${initrd_addr_r} \${uinitrd}
+fatload mmc 0:1 \${fdtbin_addr_r} \${fdtbin}
+bootz \${zimage_addr_r} \${initrd_addr_r} \${fdtbin_addr_r}"
 
 boot
 __EOF
