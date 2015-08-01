@@ -21,6 +21,8 @@ mkimage -A arm -O linux -T ramdisk -C gzip \
         -a ${initrd_addr} -e ${initrd_addr} -n uInitrd \
         -d /boot/initrd.img-${version} /boot/${uinitrd}
 
+rm -f /boot/initrd.img-${version}
+
 if [ ! -f /boot/boot.ini ]; then
         cat>/boot/boot.ini<<__EOF
 ODROIDXU-UBOOT-CONFIG
