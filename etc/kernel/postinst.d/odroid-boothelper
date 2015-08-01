@@ -49,8 +49,6 @@ fatload mmc 0:1 \${zimage_addr_r} \${zimage}
 fatload mmc 0:1 \${initrd_addr_r} \${uinitrd}
 fatload mmc 0:1 \${fdtbin_addr_r} \${fdtbin}
 bootz \${zimage_addr_r} \${initrd_addr_r} \${fdtbin_addr_r}"
-
-boot
 __EOF
 fi
 
