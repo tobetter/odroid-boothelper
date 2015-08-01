@@ -1,1 +1,2 @@
 etc/kernel/postinst.d/odroid-boothelper /etc/kernel/postinst.d/
+etc/kernel/postrm.d/odroid-boothelper /etc/kernel/postrm.d/
