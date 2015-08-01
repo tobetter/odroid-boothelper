@@ -54,4 +54,11 @@ bootz \${zimage_addr_r} \${initrd_addr_r} \${fdtbin_addr_r}"
 __EOF
 fi
 
+xversion=`grep "^setenv version" /boot/boot.ini | cut -d' ' -f 3`
+if [ -z ${xversion} ]; then
+        rm -f vmlinuz-${xversion}
+        rm -f uInitrd-${xversion}
+        rm -f exynos5422-${device}-${xversion}.dtb
+fi
+
 sed -i "s/^setenv version.*$/setenv version ${version}/g" /boot/boot.ini
