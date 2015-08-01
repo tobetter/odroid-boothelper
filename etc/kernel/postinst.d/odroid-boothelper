@@ -55,7 +55,7 @@ __EOF
 fi
 
 xversion=`grep "^setenv version" /boot/boot.ini | cut -d' ' -f 3`
-if [ -z ${xversion} ]; then
+if [ ! -z ${xversion} ]; then
         rm -f vmlinuz-${xversion}
         rm -f uInitrd-${xversion}
         rm -f exynos5422-${device}-${xversion}.dtb
