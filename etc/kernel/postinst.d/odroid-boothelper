@@ -41,7 +41,7 @@ setenv initrd_high "0xffffffff"
 setenv fdt_high "0xffffffff"
 
 # Default boot argument
-setenv bootrootfs "root=/dev/mmcblk0p2 rootwait ro"
+setenv bootrootfs "root=/dev/mmcblk0p2 rootwait ro fsck.repair=yes"
 setenv console "console=ttySAC2,115200n8"
 
 setenv bootargs "\${bootrootfs} \${console}"
