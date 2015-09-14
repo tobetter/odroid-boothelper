@@ -8,5 +8,5 @@ Homepage: https://github.com/tobetter/odroid-boothelper
 
 Package: odroid-boothelper
 Architecture: armhf
-Depends: ${shlibs:Depends}, ${misc:Depends}, initramfs-tools, uboot-mkimage | u-boot-tools
+Depends: ${shlibs:Depends}, ${misc:Depends}, linux-initramfs-tool, uboot-mkimage | u-boot-tools
 Description: Boot setup helper for Linux kernel
