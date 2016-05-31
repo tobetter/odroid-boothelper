@@ -14,8 +14,15 @@ zimage_addr=0x40008000
 initrd_addr=0x42000000
 fdtbin_addr=0x44000000
 
-cp -f /lib/modules/${version}/boot/${zimage} /boot
-cp -f /lib/modules/${version}/boot/${fdtbin} /boot
+loc_fdtbin=${PWD}/arch/arm/boot/dts/exynos5422-${device}.dtb
+src_fdtbin=/lib/modules/${version}/boot/${fdtbin}
+src_zimage=/lib/modules/${version}/boot/${zimage}
+
+mkdir -p /lib/modules/${version}/boot
+
+[ -f ${loc_fdtbin} ] && cp ${loc_fdtbin} ${src_fdtbin}
+[ -f ${src_fdtbin} ] && cp -f ${src_fdtbin} /boot
+[ -f ${src_zimage} ] && cp -f ${src_zimage} /boot
 
 mkimage -A arm -O linux -T ramdisk -C gzip \
         -a ${initrd_addr} -e ${initrd_addr} -n uInitrd \
