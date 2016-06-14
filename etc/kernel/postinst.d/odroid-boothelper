@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 version="$1"
 
@@ -17,6 +17,23 @@ fdtbin_addr=0x44000000
 loc_fdtbin=${PWD}/arch/arm/boot/dts/exynos5422-${device}.dtb
 src_fdtbin=/lib/modules/${version}/boot/${fdtbin}
 src_zimage=/lib/modules/${version}/boot/${zimage}
+
+#
+# Let use select root partition to start up
+#
+menus=
+count=0
+for i in `blkid -o device`; do
+	count=$[count+1]
+	target=`findmnt -nr -o target -S ${i}`
+	[ "x${target}" == "x/" ] && flag="on" || flag="off"
+	menus="${menus} ${i} ${target} ${flag} "
+done
+
+tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
+dialog --title "[root partition]" --radiolist "Select root partition:" 12 40 ${count} ${menus} 2> $tempfile
+value=`cat $tempfile`
+rootdev="UUID=`blkid -s UUID -o value ${value}`"
 
 mkdir -p /lib/modules/${version}/boot
 
@@ -48,7 +65,8 @@ setenv initrd_high "0xffffffff"
 setenv fdt_high "0xffffffff"
 
 # Default boot argument
-setenv bootrootfs "root=/dev/mmcblk0p2 rootwait ro fsck.repair=yes"
+setenv rootdev
+setenv bootrootfs "root=\${rootdev} rootwait ro fsck.repair=yes"
 setenv console "console=ttySAC2,115200n8"
 
 setenv bootargs "\${bootrootfs} \${console}"
@@ -69,3 +87,4 @@ if [ ! -z ${xversion} ]; then
 fi
 
 sed -i "s/^setenv version.*$/setenv version ${version}/g" /boot/boot.ini
+sed -i "s/^setenv rootdev.*$/setenv rootdev \"${rootdev}\"/g" /boot/boot.ini
