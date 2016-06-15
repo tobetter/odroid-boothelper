@@ -24,14 +24,17 @@ src_zimage=/lib/modules/${version}/boot/${zimage}
 menus=
 count=0
 notmounted="NOTMOUNTED"
-for i in `blkid -o device`; do
-	count=$[count+1]
-	target=`findmnt -nr -o target -S ${i} || echo ${notmounted}`
-	if [ "x${target}" != "x${notmounted}" ]; then
-		[ "x${target}" == "x/" ] && flag="on" || flag="off"
-		menus="${menus} ${i} ${target} ${flag} "
-	fi
-done
+blockdevs=`blkid -o device`
+if [ ! -z ${blockdevs} ]; then
+	for i in ${blockdevs}; do
+		count=$[count+1]
+		target=`findmnt -nr -o target -S ${i} || echo ${notmounted}`
+		if [ "x${target}" != "x${notmounted}" ]; then
+			[ "x${target}" == "x/" ] && flag="on" || flag="off"
+			menus="${menus} ${i} ${target} ${flag} "
+		fi
+	done
+fi
 
 rootdev="LABEL=rootfs"
 if [ "x${count}" != "x0" ]; then
