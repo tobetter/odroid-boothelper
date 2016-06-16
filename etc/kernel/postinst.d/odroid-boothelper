@@ -24,16 +24,14 @@ src_zimage=/lib/modules/${version}/boot/${zimage}
 menus=
 count=0
 blockdevs=`blkid -o device || echo ""`
-if [ ! -z ${blockdevs} ]; then
-	for i in ${blockdevs}; do
-		count=$[count+1]
-		target=`findmnt -nr -o target -S ${i} || echo ""`
-		if [ ! -z ${target} ]; then
-			[ "x${target}" == "x/" ] && flag="on" || flag="off"
-			menus="${menus} ${i} ${target} ${flag} "
-		fi
-	done
-fi
+for i in ${blockdevs}; do
+	count=$[count+1]
+	target=`findmnt -nr -o target -S ${i} || echo ""`
+	if [ ! -z ${target} ]; then
+		[ "x${target}" == "x/" ] && flag="on" || flag="off"
+		menus="${menus} ${i} ${target} ${flag} "
+	fi
+done
 
 rootdev="LABEL=rootfs"
 if [ "x${count}" != "x0" ]; then
