@@ -18,6 +18,8 @@ loc_fdtbin=${PWD}/arch/arm/boot/dts/exynos5422-${device}.dtb
 src_fdtbin=/lib/modules/${version}/boot/${fdtbin}
 src_zimage=/lib/modules/${version}/boot/${zimage}
 
+echo "I: scanning block devices..."
+
 #
 # Let use select root partition to start up
 #
@@ -33,19 +35,26 @@ for i in ${blockdevs}; do
 	fi
 done
 
+echo "I: ${count} device(s) are detected...${blockdevs}"
+
 rootdev="LABEL=rootfs"
 if [ "x${count}" != "x0" ]; then
+	echo "I: select a partition where to install Linux root file system"
 	tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
 	dialog --title "[root partition]" --radiolist "Select root partition:" 12 40 ${count} ${menus} 2> $tempfile
 	value=`cat $tempfile`
 	rootdev="UUID=`blkid -s UUID -o value ${value}`"
 fi
 
+echo "I: installing boot files to /boot"
+
 mkdir -p /lib/modules/${version}/boot
 
 [ -f ${loc_fdtbin} ] && cp ${loc_fdtbin} ${src_fdtbin}
 [ -f ${src_fdtbin} ] && cp -f ${src_fdtbin} /boot
 [ -f ${src_zimage} ] && cp -f ${src_zimage} /boot
+
+echo "I: creating ramdisk and install as /boot/${uinitrd}"
 
 mkimage -A arm -O linux -T ramdisk -C gzip \
         -a ${initrd_addr} -e ${initrd_addr} -n uInitrd \
@@ -83,7 +92,10 @@ fatload mmc 0:1 \${initrd_addr_r} \${uinitrd}
 fatload mmc 0:1 \${fdtbin_addr_r} \${fdtbin}
 bootz \${zimage_addr_r} \${initrd_addr_r} \${fdtbin_addr_r}"
 __EOF
+	echo "I: '/boot/boot.ini' is created."
 fi
+
+echo "I: Cleaning up..."
 
 xversion=`grep "^setenv version" /boot/boot.ini | cut -d' ' -f 3`
 if [ ! -z ${xversion} ]; then
@@ -94,3 +106,5 @@ fi
 
 sed -i "s/^setenv version.*$/setenv version ${version}/g" /boot/boot.ini
 sed -i "s/^setenv rootdev.*$/setenv rootdev \"${rootdev}\"/g" /boot/boot.ini
+
+echo "I: Done!!"
