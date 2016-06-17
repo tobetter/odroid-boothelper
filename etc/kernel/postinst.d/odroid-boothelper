@@ -30,11 +30,11 @@ for i in ${blockdevs}; do
 	pttype=`blkid ${i} | grep PTTYPE || echo ""`
 	[ ! -z "${pttype}" ] && continue
 
-	count=$[count+1]
 	target=`findmnt -nr -o target -S ${i} || echo ""`
 	if [ ! -z ${target} ]; then
 		[ "x${target}" == "x/" ] && flag="on" || flag="off"
 		menus="${menus} ${i} ${target} ${flag} "
+		count=$[count+1]
 	fi
 done
 
