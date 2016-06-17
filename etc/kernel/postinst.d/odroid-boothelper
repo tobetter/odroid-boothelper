@@ -27,6 +27,9 @@ menus=
 count=0
 blockdevs=`blkid -o device || echo ""`
 for i in ${blockdevs}; do
+	pttype=`blkid ${i} | grep PTTYPE || echo ""`
+	[ ! -z "${pttype}" ] && continue
+
 	count=$[count+1]
 	target=`findmnt -nr -o target -S ${i} || echo ""`
 	if [ ! -z ${target} ]; then
