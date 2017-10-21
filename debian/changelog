@@ -1,3 +1,9 @@
+odroid-boothelper (0.2) unstable; urgency=medium
+
+  * kernel/script: adding /etc/kernel/postinst.d/odroid-boothelper
+
+ -- Dongjin Kim <tobetter@gmail.com>  Sat, 21 Oct 2017 06:35:01 +0000
+
 odroid-boothelper (0.1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
