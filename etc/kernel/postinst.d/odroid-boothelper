@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+version="$1"
+
+# FIXME: The board specific device symbol to be more generic
+#        or can be obtained from the board itself.
+device=odroidxu4
+
+UINITRD=/boot/uInitrd-${version}
+
+cp -f /lib/modules/${version}/boot/vmlinuz-${version} /boot
+cp -f /lib/modules/${version}/boot/exynos5422-${device}-${version}.dtb /boot
+
+mkimage -A arm -O linux -T ramdisk -C gzip \
+        -a 0x42000000 -e 0x42000000 -n uInitrd \
+        -d /boot/initrd.img-${version} ${UINITRD}
